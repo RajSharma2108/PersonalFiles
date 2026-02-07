@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Valentine's Question 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hearts-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            animation: float 8s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: white;
+            padding: 60px 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 550px;
+            position: relative;
+            z-index: 10;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        h1 {
+            color: #764ba2;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .name {
+            color: #e63946;
+            font-style: italic;
+        }
+
+        .message {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 25px 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .highlight {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        .question {
+            font-size: 22px;
+            color: #333;
+            margin: 30px 0 40px 0;
+            font-weight: 600;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            position: relative;
+            height: 80px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            font-size: 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-yes:active {
+            transform: scale(1.05);
+        }
+
+        .btn-no {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #555;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .emoji-overlay {
+            position: fixed;
+            font-size: 100px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: fadeInOut 2s ease-out forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.2);
+            }
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #999;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Popup Modal Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .popup-content {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 25px;
+            text-align: center;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .popup-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .popup-title {
+            font-size: 28px;
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .popup-message {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .popup-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .popup-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .popup-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            .message {
+                font-size: 16px;
+            }
+            
+            .question {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 15px 35px;
+                font-size: 18px;
+            }
+
+            .emoji-overlay {
+                font-size: 80px;
+            }
+
+            .popup-content {
+                padding: 40px 30px;
+                margin: 20px;
+                max-width: 90%;
+            }
+
+            .popup-emoji {
+                font-size: 80px;
+            }
+
+            .popup-title {
+                font-size: 24px;
+            }
+
+            .popup-message {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-background" id="heartsContainer"></div>
+    
+    <!-- Popup for No button -->
+    <div class="popup-overlay" id="noPopup">
+        <div class="popup-content">
+            <div class="popup-emoji">🥺</div>
+            <div class="popup-title">Oh come on... 💔</div>
+            <div class="popup-message">
+                That hurt more than I'd like to admit! 
+                <br><br>
+                How about giving me another chance? I promise I'll make it worth your while... 😏
+            </div>
+            <button class="popup-btn" onclick="closeNoPopup()">Try Again 💕</button>
+        </div>
+    </div>
+
+    <!-- Popup for Yes button -->
+    <div class="popup-overlay" id="yesPopup">
+        <div class="popup-content">
+            <div class="popup-emoji">🥰</div>
+            <div class="popup-title">Best. Decision. Ever! 🎉</div>
+            <div class="popup-message">
+                I knew you couldn't resist this charm! 😉
+                <br><br>
+                Get ready for an amazing Valentine's Day, cutie. 
+                <br>
+                <span class="highlight">See you soon! 💕✨</span>
+            </div>
+            <button class="popup-btn" onclick="closeYesPopup()">Can't Wait! 😊</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="emoji">🌹</div>
+        <h1>Hey <span class="name">Arpita</span>,</h1>
+        
+        <div class="message">
+            So, we met three weeks ago, and I have to say... 
+            <span class="highlight">you've been on my mind more than I'd like to admit.</span> 
+            <br><br>
+            Valentine's Day is around the corner, and I can't think of anyone I'd rather spend it with. 
+            Let me take you out and make it a day you'll remember for all the <span class="highlight">right reasons.</span>
+        </div>
+        
+        <div class="question">
+            Will you be my Valentine? 💕
+        </div>
+        
+        <div class="buttons-container">
+            <button class="btn btn-yes" id="yesBtn">Yes! 😊</button>
+            <button class="btn btn-no" id="noBtn">No 😢</button>
+        </div>
+        
+        <div class="footer">
+            P.S. That "No" button is as slippery as my chances without you 😉
+        </div>
+    </div>
+
+    <script>
+        // Track if emojis are currently showing to prevent spam
+        let emojiCooldown = false;
+        let noBtnMoved = false;
+
+        // Create floating hearts
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.textContent = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.animationDelay = Math.random() * 3 + 's';
+            document.getElementById('heartsContainer').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        // Create hearts periodically
+        setInterval(createHeart, 800);
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createHeart, i * 200);
+        }
+
+        // Move the No button
+        function moveButton() {
+            const noBtn = document.getElementById('noBtn');
+            
+            // Show watery eyes emoji
+            showEmojiOverlay();
+            
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Calculate screen boundaries with padding
+            const padding = 20;
+            const maxLeft = window.innerWidth - btnRect.width - padding;
+            const maxTop = window.innerHeight - btnRect.height - padding;
+            
+            // Generate random position within screen bounds
+            let newLeft, newTop;
+            let attempts = 0;
+            
+            do {
+                newLeft = Math.random() * (maxLeft - padding) + padding;
+                newTop = Math.random() * (maxTop - padding) + padding;
+                attempts++;
+            } while (attempts < 5 && (
+                Math.abs(newLeft - btnRect.left) < 100 || 
+                Math.abs(newTop - btnRect.top) < 50
+            )); // Ensure noticeable movement
+            
+            // Set new position relative to viewport
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newLeft + 'px';
+            noBtn.style.top = newTop + 'px';
+            
+            noBtnMoved = true;
+        }
+
+        // Show happy emoji
+        function showHappyEmoji() {
+            if (emojiCooldown) return;
+            
+            emojiCooldown = true;
+            const emoji = document.createElement('div');
+            emoji.classList.add('emoji-overlay');
+            emoji.textContent = '😊';
+            emoji.style.left = '50%';
+            emoji.style.top = '30%';
+            emoji.style.transform = 'translate(-50%, -50%)';
+            document.body.appendChild(emoji);
+            
+            setTimeout(() => {
+                emoji.remove();
+                emojiCooldown = false;
+            }, 2000);
+        }
+
+        // Show watery eyes emoji
+        function showEmojiOverlay() {
+            const emoji = document.createElement('div');
+            emoji.classList.add('emoji-overlay');
+            emoji.textContent = '🥺';
+            
+            // Random position on screen
+            emoji.style.left = (Math.random() * 80 + 10) + '%';
+            emoji.style.top = (Math.random() * 60 + 20) + '%';
+            
+            document.body.appendChild(emoji);
+            
+            setTimeout(() => {
+                emoji.remove();
+            }, 2000);
+        }
+
+        // Handle Yes button
+        function handleYes() {
+            // Show the Yes popup instead of changing container content
+            document.getElementById('yesPopup').classList.add('active');
+            
+            // Create celebration effect
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    createCelebrationEmoji();
+                }, i * 100);
+            }
+        }
+
+        // Close Yes popup and show final message
+        function closeYesPopup() {
+            document.getElementById('yesPopup').classList.remove('active');
+            
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="emoji" style="font-size: 120px;">🎉</div>
+                <h1 style="color: #f5576c; margin-bottom: 20px;">You just made my day! 💕</h1>
+                <div class="message" style="font-size: 20px;">
+                    I promise to make this Valentine's Day absolutely unforgettable, Arpita.
+                    <br><br>
+                    <span class="highlight">Get ready for something special! ✨</span>
+                </div>
+            `;
+            
+            // Create more celebration effects
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createCelebrationEmoji();
+                }, i * 100);
+            }
+        }
+
+        // Handle No button click - show popup
+        function handleNo() {
+            document.getElementById('noPopup').classList.add('active');
+        }
+
+        // Close No popup
+        function closeNoPopup() {
+            document.getElementById('noPopup').classList.remove('active');
+            
+            // Reset the No button position if it was moved
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.position = 'relative';
+            noBtn.style.left = '';
+            noBtn.style.top = '';
+            noBtnMoved = false;
+        }
+
+        // Create celebration emojis
+        function createCelebrationEmoji() {
+            const emojis = ['❤️', '💕', '💖', '🌹', '✨', '💝', '🎉'];
+            const emoji = document.createElement('div');
+            emoji.style.position = 'fixed';
+            emoji.style.fontSize = '40px';
+            emoji.style.left = Math.random() * 100 + 'vw';
+            emoji.style.top = '-50px';
+            emoji.style.zIndex = '1000';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            document.body.appendChild(emoji);
+            
+            const fallDuration = Math.random() * 2 + 3;
+            emoji.style.transition = `all ${fallDuration}s ease-in`;
+            emoji.style.transform = `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`;
+            
+            setTimeout(() => {
+                emoji.remove();
+            }, fallDuration * 1000);
+        }
+
+        // Setup event listeners for both desktop and mobile
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+
+        // Yes button events
+        yesBtn.addEventListener('mouseenter', showHappyEmoji);
+        yesBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            showHappyEmoji();
+        });
+        yesBtn.addEventListener('click', handleYes);
+
+        // No button events
+        noBtn.addEventListener('mouseenter', moveButton);
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveButton();
+        });
+        noBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // If button has moved at least once, show the popup
+            if (noBtnMoved) {
+                handleNo();
+            } else {
+                moveButton();
+            }
+        });
+
+        // Prevent default touch behavior to avoid double-triggering
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
