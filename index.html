@@ -3,618 +3,447 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Valentine's Question 💕</title>
+    <title>404 – But Also, Hi 👀</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --cream: #fdf6ec;
+            --warm: #f2e8d5;
+            --blush: #e8b4a0;
+            --rose: #c9506a;
+            --deep: #1a1014;
+            --muted: #7a6068;
+            --accent: #e07060;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Georgia', serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--cream);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             overflow: hidden;
             position: relative;
+            cursor: default;
         }
 
-        .hearts-background {
+        /* Grain texture overlay */
+        body::before {
+            content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.4;
+        }
+
+        /* Drifting blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, #e8b4a022, transparent 70%);
+            top: -100px; right: -100px;
+            animation: drift1 18s ease-in-out infinite alternate;
+        }
+        .blob-2 {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, #c9506a18, transparent 70%);
+            bottom: -80px; left: -80px;
+            animation: drift2 14s ease-in-out infinite alternate;
+        }
+        .blob-3 {
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, #e0706015, transparent 70%);
+            top: 40%; left: 40%;
+            animation: drift3 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes drift1 { to { transform: translate(-60px, 80px); } }
+        @keyframes drift2 { to { transform: translate(80px, -60px); } }
+        @keyframes drift3 { to { transform: translate(-40px, 40px) scale(1.2); } }
+
+        /* Floating tiny elements */
+        .floater {
+            position: fixed;
+            font-size: 18px;
             pointer-events: none;
             z-index: 1;
+            opacity: 0;
+            animation: floatUp linear infinite;
         }
 
-        .heart {
-            position: absolute;
-            font-size: 24px;
-            animation: float 8s infinite;
-            opacity: 0.3;
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            10%  { opacity: 0.25; }
+            90%  { opacity: 0.2; }
+            100% { transform: translateY(-110vh) rotate(360deg) scale(1.1); opacity: 0; }
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .container {
-            background: white;
-            padding: 60px 50px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 550px;
+        /* Main card */
+        .card {
             position: relative;
             z-index: 10;
-            animation: slideIn 0.6s ease-out;
+            max-width: 600px;
+            width: calc(100% - 40px);
+            padding: 60px 56px;
+            background: rgba(255, 252, 247, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(201, 80, 106, 0.12);
+            border-radius: 4px;
+            box-shadow:
+                0 1px 0 rgba(201, 80, 106, 0.15),
+                0 20px 60px rgba(26, 16, 20, 0.08),
+                0 2px 4px rgba(26, 16, 20, 0.04);
+            animation: cardIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .emoji {
-            font-size: 80px;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
+        /* Decorative corner lines */
+        .card::before, .card::after {
+            content: '';
+            position: absolute;
+            width: 28px; height: 28px;
+            border-color: var(--rose);
+            border-style: solid;
+            opacity: 0.4;
+        }
+        .card::before { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
+        .card::after  { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
+
+        .error-tag {
+            display: inline-block;
+            font-family: 'DM Sans', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--rose);
+            background: rgba(201, 80, 106, 0.08);
+            border: 1px solid rgba(201, 80, 106, 0.2);
+            padding: 5px 14px;
+            border-radius: 2px;
+            margin-bottom: 28px;
+            animation: cardIn 0.9s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+        .error-code {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(72px, 14vw, 110px);
+            font-weight: 700;
+            color: var(--deep);
+            line-height: 1;
+            letter-spacing: -3px;
+            margin-bottom: 6px;
+            animation: cardIn 0.9s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        h1 {
-            color: #764ba2;
-            font-size: 32px;
-            margin-bottom: 15px;
-            font-weight: 600;
+        .error-code span {
+            color: var(--rose);
         }
 
-        .name {
-            color: #e63946;
+        .subtitle {
+            font-family: 'Playfair Display', serif;
             font-style: italic;
-        }
-
-        .message {
-            color: #555;
-            font-size: 18px;
-            line-height: 1.6;
-            margin: 25px 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .highlight {
-            color: #764ba2;
-            font-weight: 600;
-        }
-
-        .question {
-            font-size: 22px;
-            color: #333;
-            margin: 30px 0 40px 0;
-            font-weight: 600;
-        }
-
-        .buttons-container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            position: relative;
-            height: 80px;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 18px 45px;
             font-size: 20px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            font-family: 'Arial', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            color: var(--muted);
+            margin-bottom: 36px;
+            animation: cardIn 0.9s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .btn-yes {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+        .divider {
+            width: 48px;
+            height: 1px;
+            background: linear-gradient(to right, var(--rose), transparent);
+            margin-bottom: 36px;
+            animation: cardIn 0.9s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .btn-yes:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        .main-message {
+            font-size: 15.5px;
+            color: var(--deep);
+            line-height: 1.85;
+            margin-bottom: 28px;
+            font-weight: 300;
+            animation: cardIn 0.9s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .btn-yes:active {
-            transform: scale(1.05);
+        .main-message strong {
+            font-weight: 500;
+            color: var(--rose);
         }
 
-        .btn-no {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            color: #555;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .emoji-overlay {
-            position: fixed;
-            font-size: 100px;
-            pointer-events: none;
-            z-index: 1000;
-            animation: fadeInOut 2s ease-out forwards;
-        }
-
-        @keyframes fadeInOut {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            20% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            80% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(1.2);
-            }
-        }
-
-        .footer {
-            margin-top: 30px;
-            color: #999;
-            font-size: 14px;
+        .flirt-note {
+            background: rgba(201, 80, 106, 0.05);
+            border-left: 2px solid var(--rose);
+            padding: 18px 22px;
+            border-radius: 0 3px 3px 0;
+            font-family: 'Playfair Display', serif;
             font-style: italic;
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 36px;
+            animation: cardIn 0.9s 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        /* Popup Modal Styles */
-        .popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
+        .flirt-note em {
+            color: var(--rose);
+            font-style: normal;
+            font-weight: 400;
         }
 
-        .popup-overlay.active {
+        .cta-row {
             display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: cardIn 0.9s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .popup-content {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 25px;
-            text-align: center;
-            max-width: 450px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .btn-ping {
             position: relative;
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .popup-emoji {
-            font-size: 100px;
-            margin-bottom: 20px;
-            animation: bounce 0.6s ease;
-        }
-
-        @keyframes bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        .popup-title {
-            font-size: 28px;
-            color: #764ba2;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .popup-message {
-            font-size: 18px;
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .popup-btn {
-            padding: 15px 40px;
-            font-size: 18px;
+            padding: 13px 32px;
+            background: var(--rose);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
             border: none;
-            border-radius: 50px;
+            border-radius: 2px;
             cursor: pointer;
-            font-weight: 600;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            font-family: 'Arial', sans-serif;
+            transition: background 0.2s, transform 0.15s;
+            overflow: hidden;
         }
 
-        .popup-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        .btn-ping::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.15);
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
-        .popup-btn:active {
-            transform: scale(0.98);
+        .btn-ping:hover { background: #b83f59; transform: translateY(-1px); }
+        .btn-ping:hover::after { opacity: 1; }
+        .btn-ping:active { transform: translateY(0); }
+
+        .btn-ghost {
+            padding: 13px 28px;
+            background: transparent;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            border: 1px solid rgba(122, 96, 104, 0.25);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s, transform 0.15s;
+        }
+        .btn-ghost:hover { border-color: var(--rose); color: var(--rose); transform: translateY(-1px); }
+
+        .footer-line {
+            margin-top: 40px;
+            font-size: 11.5px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(122, 96, 104, 0.45);
+            animation: cardIn 0.9s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 40px 30px;
-                margin: 20px;
-            }
-            
-            h1 {
-                font-size: 26px;
-            }
-            
-            .message {
-                font-size: 16px;
-            }
-            
-            .question {
-                font-size: 20px;
-            }
-            
-            .btn {
-                padding: 15px 35px;
-                font-size: 18px;
-            }
+        /* Toast / reaction popup */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--deep);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 200;
+            white-space: nowrap;
+            box-shadow: 0 8px 30px rgba(26,16,20,0.2);
+            pointer-events: none;
+        }
 
-            .emoji-overlay {
-                font-size: 80px;
-            }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
-            .popup-content {
-                padding: 40px 30px;
-                margin: 20px;
-                max-width: 90%;
-            }
+        /* Ripple on button */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            transform: scale(0);
+            animation: rippleAnim 0.55s linear;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
 
-            .popup-emoji {
-                font-size: 80px;
-            }
-
-            .popup-title {
-                font-size: 24px;
-            }
-
-            .popup-message {
-                font-size: 16px;
-            }
+        @media (max-width: 520px) {
+            .card { padding: 44px 32px; }
+            .error-code { letter-spacing: -1px; }
         }
     </style>
 </head>
 <body>
-    <div class="hearts-background" id="heartsContainer"></div>
-    
-    <!-- Popup for No button -->
-    <div class="popup-overlay" id="noPopup">
-        <div class="popup-content">
-            <div class="popup-emoji">🥺</div>
-            <div class="popup-title">Oh come on... 💔</div>
-            <div class="popup-message">
-                That hurt more than I'd like to admit! 
-                <br><br>
-                How about giving me another chance? I promise I'll make it worth your while... 😏
-            </div>
-            <button class="popup-btn" onclick="closeNoPopup()">Try Again 💕</button>
-        </div>
-    </div>
 
-    <!-- Popup for Yes button -->
-    <div class="popup-overlay" id="yesPopup">
-        <div class="popup-content">
-            <div class="popup-emoji">🥰</div>
-            <div class="popup-title">Best. Decision. Ever! 🎉</div>
-            <div class="popup-message">
-                I knew you couldn't resist this charm! 😉
-                <br><br>
-                Get ready for an amazing Valentine's Day, cutie. 
-                <br>
-                <span class="highlight">See you soon! 💕✨</span>
-            </div>
-            <button class="popup-btn" onclick="closeYesPopup()">Can't Wait! 😊</button>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="emoji">🌹</div>
-        <h1>Hey <span class="name">Arpita</span>,</h1>
-        
-        <div class="message">
-            So, we met three weeks ago, and I have to say... 
-            <span class="highlight">you've been on my mind more than I'd like to admit.</span> 
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="card">
+        <div class="error-tag">Error 404 — Page not found</div>
+
+        <div class="error-code">4<span>0</span>4</div>
+        <div class="subtitle">The page left. He didn't.</div>
+
+        <div class="divider"></div>
+
+        <p class="main-message">
+            Okay, so — <strong>the page you're looking for doesn't exist anymore.</strong>
+            Gone. Deleted. A distant memory. Kind of like the days before you showed up and made everything weirdly interesting.
             <br><br>
-            Valentine's Day is around the corner, and I can't think of anyone I'd rather spend it with. 
-            Let me take you out and make it a day you'll remember for all the <span class="highlight">right reasons.</span>
+            But here's the thing — the person who <em>built</em> this page? Still very much here.
+            Still very much thinking about you. Like, an embarrassing amount, honestly.
+            If you typed this URL on purpose, that means something. And it just made his day 10x better without even trying — which is honestly a little unfair on your part.
+        </p>
+
+        <div class="flirt-note">
+            "We're still friends, I guess" — sure, <em>friends</em>.
+            Friends who make custom 404 pages for each other. Totally normal. Very platonic.
+            No feelings here whatsoever. 😌
         </div>
-        
-        <div class="question">
-            Will you be my Valentine? 💕
+
+        <div class="cta-row">
+            <button class="btn-ping" id="pingBtn" onclick="handlePing(event)">
+                Let him know you were here 💌
+            </button>
+            <button class="btn-ghost" onclick="handleNope()">
+                I stumbled here by accident
+            </button>
         </div>
-        
-        <div class="buttons-container">
-            <button class="btn btn-yes" id="yesBtn">Yes! 😊</button>
-            <button class="btn btn-no" id="noBtn">No 😢</button>
-        </div>
-        
-        <div class="footer">
-            P.S. That "No" button is as slippery as my chances without you 😉
-        </div>
+
+        <div class="footer-line">Made with entirely not-suspicious amounts of care · Arpita edition</div>
     </div>
 
     <script>
-        // Track if emojis are currently showing to prevent spam
-        let emojiCooldown = false;
-        let noBtnMoved = false;
+        // Floating tiny emojis
+        const symbols = ['✦', '✧', '⋆', '•', '◦', '‣', '›', '»'];
+        function spawnFloater() {
+            const el = document.createElement('div');
+            el.className = 'floater';
+            el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            el.style.left = (Math.random() * 100) + 'vw';
+            el.style.bottom = '-30px';
+            el.style.fontSize = (10 + Math.random() * 14) + 'px';
+            el.style.color = Math.random() > 0.5 ? '#c9506a' : '#e8b4a0';
+            const dur = 12 + Math.random() * 12;
+            el.style.animationDuration = dur + 's';
+            el.style.animationDelay = (Math.random() * -dur) + 's';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), dur * 1000 + 2000);
+        }
+        for (let i = 0; i < 18; i++) spawnFloater();
+        setInterval(spawnFloater, 1800);
 
-        // Create floating hearts
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.textContent = '💖';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            heart.style.animationDelay = Math.random() * 3 + 's';
-            document.getElementById('heartsContainer').appendChild(heart);
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 10000);
+        // Toast messages
+        const toasts = [
+            "Message received. He's smiling like an idiot right now. 😌",
+            "Noted. He'll try to act casual and absolutely fail.",
+            "Delivered. He's pretending he's not excited. He is.",
+            "You just ruined his ability to focus for the rest of the day. 💌",
+        ];
+        const nopeToasts = [
+            "Sure. Accidentally. With the exact URL. Very believable. 😏",
+            "Right. An accident. We'll go with that.",
+            "Mmhm. Totally random. Okay Arpita. 🙄",
+            "The universe works in mysterious ways. So do you, apparently.",
+        ];
+
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3800);
         }
 
-        // Create hearts periodically
-        setInterval(createHeart, 800);
-        for (let i = 0; i < 8; i++) {
-            setTimeout(createHeart, i * 200);
-        }
+        let pingCount = 0;
+        function handlePing(e) {
+            // Ripple effect
+            const btn = document.getElementById('pingBtn');
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top  = (e.clientY - rect.top  - size / 2) + 'px';
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
 
-        // Move the No button
-        function moveButton() {
-            const noBtn = document.getElementById('noBtn');
-            
-            // Show watery eyes emoji
-            showEmojiOverlay();
-            
-            const btnRect = noBtn.getBoundingClientRect();
-            
-            // Calculate screen boundaries with padding
-            const padding = 20;
-            const maxLeft = window.innerWidth - btnRect.width - padding;
-            const maxTop = window.innerHeight - btnRect.height - padding;
-            
-            // Generate random position within screen bounds
-            let newLeft, newTop;
-            let attempts = 0;
-            
-            do {
-                newLeft = Math.random() * (maxLeft - padding) + padding;
-                newTop = Math.random() * (maxTop - padding) + padding;
-                attempts++;
-            } while (attempts < 5 && (
-                Math.abs(newLeft - btnRect.left) < 100 || 
-                Math.abs(newTop - btnRect.top) < 50
-            )); // Ensure noticeable movement
-            
-            // Set new position relative to viewport
-            noBtn.style.position = 'fixed';
-            noBtn.style.left = newLeft + 'px';
-            noBtn.style.top = newTop + 'px';
-            
-            noBtnMoved = true;
-        }
+            showToast(toasts[pingCount % toasts.length]);
+            pingCount++;
 
-        // Show happy emoji
-        function showHappyEmoji() {
-            if (emojiCooldown) return;
-            
-            emojiCooldown = true;
-            const emoji = document.createElement('div');
-            emoji.classList.add('emoji-overlay');
-            emoji.textContent = '😊';
-            emoji.style.left = '50%';
-            emoji.style.top = '30%';
-            emoji.style.transform = 'translate(-50%, -50%)';
-            document.body.appendChild(emoji);
-            
-            setTimeout(() => {
-                emoji.remove();
-                emojiCooldown = false;
-            }, 2000);
-        }
-
-        // Show watery eyes emoji
-        function showEmojiOverlay() {
-            const emoji = document.createElement('div');
-            emoji.classList.add('emoji-overlay');
-            emoji.textContent = '🥺';
-            
-            // Random position on screen
-            emoji.style.left = (Math.random() * 80 + 10) + '%';
-            emoji.style.top = (Math.random() * 60 + 20) + '%';
-            
-            document.body.appendChild(emoji);
-            
-            setTimeout(() => {
-                emoji.remove();
-            }, 2000);
-        }
-
-        // Handle Yes button
-        function handleYes() {
-            // Show the Yes popup instead of changing container content
-            document.getElementById('yesPopup').classList.add('active');
-            
-            // Create celebration effect
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    createCelebrationEmoji();
-                }, i * 100);
+            // Scatter mini hearts from button position
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            for (let i = 0; i < 8; i++) {
+                const h = document.createElement('div');
+                h.textContent = ['💌','✦','♡','✧'][Math.floor(Math.random()*4)];
+                h.style.cssText = `
+                    position:fixed;left:${cx}px;top:${cy}px;font-size:16px;
+                    pointer-events:none;z-index:200;transition:all 1s ease-out;
+                    color:var(--rose);opacity:1;
+                `;
+                document.body.appendChild(h);
+                const angle = (i / 8) * Math.PI * 2;
+                const dist = 60 + Math.random() * 50;
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        h.style.transform = `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`;
+                        h.style.opacity = '0';
+                    });
+                });
+                setTimeout(() => h.remove(), 1100);
             }
         }
 
-        // Close Yes popup and show final message
-        function closeYesPopup() {
-            document.getElementById('yesPopup').classList.remove('active');
-            
-            const container = document.querySelector('.container');
-            container.innerHTML = `
-                <div class="emoji" style="font-size: 120px;">🎉</div>
-                <h1 style="color: #f5576c; margin-bottom: 20px;">You just made my day! 💕</h1>
-                <div class="message" style="font-size: 20px;">
-                    I promise to make this Valentine's Day absolutely unforgettable, Arpita.
-                    <br><br>
-                    <span class="highlight">Get ready for something special! ✨</span>
-                </div>
-            `;
-            
-            // Create more celebration effects
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    createCelebrationEmoji();
-                }, i * 100);
-            }
+        let nopeCount = 0;
+        function handleNope() {
+            showToast(nopeToasts[nopeCount % nopeToasts.length]);
+            nopeCount++;
         }
-
-        // Handle No button click - show popup
-        function handleNo() {
-            document.getElementById('noPopup').classList.add('active');
-        }
-
-        // Close No popup
-        function closeNoPopup() {
-            document.getElementById('noPopup').classList.remove('active');
-            
-            // Reset the No button position if it was moved
-            const noBtn = document.getElementById('noBtn');
-            noBtn.style.position = 'relative';
-            noBtn.style.left = '';
-            noBtn.style.top = '';
-            noBtnMoved = false;
-        }
-
-        // Create celebration emojis
-        function createCelebrationEmoji() {
-            const emojis = ['❤️', '💕', '💖', '🌹', '✨', '💝', '🎉'];
-            const emoji = document.createElement('div');
-            emoji.style.position = 'fixed';
-            emoji.style.fontSize = '40px';
-            emoji.style.left = Math.random() * 100 + 'vw';
-            emoji.style.top = '-50px';
-            emoji.style.zIndex = '1000';
-            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            
-            document.body.appendChild(emoji);
-            
-            const fallDuration = Math.random() * 2 + 3;
-            emoji.style.transition = `all ${fallDuration}s ease-in`;
-            emoji.style.transform = `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`;
-            
-            setTimeout(() => {
-                emoji.remove();
-            }, fallDuration * 1000);
-        }
-
-        // Setup event listeners for both desktop and mobile
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-
-        // Yes button events
-        yesBtn.addEventListener('mouseenter', showHappyEmoji);
-        yesBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            showHappyEmoji();
-        });
-        yesBtn.addEventListener('click', handleYes);
-
-        // No button events
-        noBtn.addEventListener('mouseenter', moveButton);
-        noBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            moveButton();
-        });
-        noBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            // If button has moved at least once, show the popup
-            if (noBtnMoved) {
-                handleNo();
-            } else {
-                moveButton();
-            }
-        });
-
-        // Prevent default touch behavior to avoid double-triggering
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('touchend', function(e) {
-                e.preventDefault();
-            });
-        });
     </script>
 </body>
 </html>
